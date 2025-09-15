@@ -1,0 +1,29 @@
+{
+    "@@locale": "en",
+    "locationPermissionNeeded": "Location permission needed",
+    "locationServiceNeeded": "Location service needed",
+    "locationPermissionNeededDis": "Please enable location permission to get more accurate weather information.",
+    "allowLocation": "Allow location",
+    "discoverTheWeather": "Discover the weather",
+    "wind": "Wind",
+    "weatherNow": "Weather now",
+    "search": "Search",
+    "locationPermissionPermanentlyDenied": "Location permission permanently denied.",
+    "locationPermissionDenied": "Location permission denied.",
+    "locationServicesDisabled": "Location service is disable.",
+    "openSettings": "Open Settings",
+    "upcoming": "Upcoming",
+    "currentLocation": "Current location",
+    "noResultsFound": "No result found",
+    "startTypingToSearch": "Start typing to search",
+    "searchLocation": "Search location",
+    "temperatureChart": "Temperature Chart",
+    "weatherApp": "Weather App",
+    "windSpeed":"Wind Speed: {name}/kmph",
+    "@windSpeed": {
+    "placeholders": {
+      "name": {}
+    }
+  }
+
+}

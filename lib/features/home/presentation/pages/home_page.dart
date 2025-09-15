@@ -1,0 +1,177 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:weather_app/core/constant/app_container.dart';
+import 'package:weather_app/core/constant/app_edge_insets.dart';
+import 'package:weather_app/core/constant/app_extentions.dart';
+import 'package:weather_app/core/theme/app_theme.dart';
+import 'package:weather_app/core/utils/custom_image_view.dart';
+import 'package:weather_app/core/utils/custom_text.dart';
+import 'package:weather_app/features/home/presentation/bloc/weather_cubit.dart';
+import 'package:weather_app/features/home/presentation/pages/location_search_page.dart';
+import 'package:weather_app/features/home/presentation/pages/weather_map_page.dart';
+import 'package:weather_app/features/home/presentation/widgets/weather_temperature_chart.dart';
+import 'package:weather_app/gen/assets.gen.dart';
+import 'package:weather_app/l10n/app_localizations.dart';
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  static Future<void> toRoute({required BuildContext context}) {
+    return Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var appStrings = AppLocalizations.of(context)!;
+    var appStyles = AppStyles.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: AppText(appStrings.discoverTheWeather, style: appStyles.s18w500black),
+        actionsPadding: AppEdgeInsets.h16(),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              LocationSearchPage.toRoute(context: context);
+            },
+            child: AppContainer.circle(child: CustomImageView(imagePath: Assets.svg.icSearch, height: 20, width: 20)),
+          ),
+          12.widthBox,
+          GestureDetector(onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => MapPage(),),);
+          },child: AppContainer.circle(child: CustomImageView(imagePath: Assets.svg.icGlobal, height: 20, width: 20))),
+        ],
+      ),
+      body: BlocBuilder<WeatherCubit, WeatherState>(
+        builder: (context, state) {
+          if (state is WeatherLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is WeatherLoaded) {
+            final currentWeather = state.currentWeather;
+            final forecast = state.forecast;
+
+            return SingleChildScrollView(
+              padding: AppEdgeInsets.all16(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// ---- CURRENT WEATHER CARD ----
+                  AppContainer.primary(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AppText(
+                                    appStrings.currentLocation,
+                                    style: appStyles.s16w400Grey.copyWith(color: AppColors.tempWhite),
+                                  ),
+                                  4.heightBox,
+                                  AppText(
+                                    context.read<WeatherCubit>().city ?? '--',
+                                    style: appStyles.s20w600black.copyWith(color: AppColors.tempWhite),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            CustomImageView(
+                              imagePath: 'https://openweathermap.org/img/wn/${currentWeather.icon}.png',
+                              height: 60,
+                              width: 60,
+                            ),
+                          ],
+                        ),
+                        8.heightBox,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AppText(
+                              appStrings.windSpeed(currentWeather.windSpeed.toStringAsFixed(2)),
+                              style: appStyles.s16w400Grey.copyWith(color: AppColors.tempWhite),
+                            ),
+                            AppText(
+                              '${currentWeather.temperature.toStringAsFixed(1)} ℃',
+                              style: appStyles.s18w500black.copyWith(color: AppColors.tempWhite),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  16.heightBox,
+
+                  AppText(appStrings.upcoming, style: appStyles.s18w500black),
+                  8.heightBox,
+                  ListView.separated(
+                    separatorBuilder: (context, index) => 12.heightBox,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: forecast.length,
+                    itemBuilder: (context, index) {
+                      final dayWeather = forecast[index];
+
+                      return AppContainer.primary(
+                        padding: AppEdgeInsets.all12(),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      AppText(
+                                        DateFormat('dd MMM yyyy').format(DateTime.parse(dayWeather.dateTime)),
+                                        style: appStyles.s16w400Grey.copyWith(color: AppColors.tempWhite),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                CustomImageView(
+                                  imagePath: 'https://openweathermap.org/img/wn/${dayWeather.icon}.png',
+                                  height: 50,
+                                  width: 50,
+                                ),
+                              ],
+                            ),
+                            8.heightBox,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                AppText(
+                                  appStrings.windSpeed((dayWeather.windSpeed).toStringAsFixed(2)),
+                                  style: appStyles.s16w400Grey.copyWith(color: AppColors.tempWhite),
+                                ),
+                                AppText(
+                                  '${dayWeather.temperature.toStringAsFixed(1)} ℃',
+                                  style: appStyles.s18w500black.copyWith(color: AppColors.tempWhite),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  16.heightBox,
+
+                  AppText(appStrings.temperatureChart, style: appStyles.s18w500black),
+                  8.heightBox,
+                  WeatherTemperatureChart(weatherData: [currentWeather] + forecast),
+                ],
+              ),
+            );
+          } else if (state is WeatherError) {
+            return Center(child: AppText('Error: ${state.message}', style: appStyles.s16w400Grey));
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+}
