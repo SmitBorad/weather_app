@@ -50,8 +50,9 @@ class MyApp extends StatelessWidget {
         title: 'Weather App',
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.dark,
         theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
         home: const SplashPage(),
       ),
     );

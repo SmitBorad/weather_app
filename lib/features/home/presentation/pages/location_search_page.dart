@@ -4,17 +4,20 @@ import 'package:weather_app/core/constant/app_container.dart';
 import 'package:weather_app/core/constant/app_edge_insets.dart';
 import 'package:weather_app/core/constant/app_extentions.dart';
 import 'package:weather_app/core/theme/app_theme.dart';
+import 'package:weather_app/core/utils/custom_image_view.dart';
 import 'package:weather_app/core/utils/custom_text.dart';
-import 'package:weather_app/features/home/domain/entities/location_entity.dart';
 import 'package:weather_app/features/home/presentation/bloc/location_search_cubit.dart';
+import 'package:weather_app/gen/assets.gen.dart';
 import 'package:weather_app/l10n/app_localizations.dart';
+
+import '../bloc/weather_cubit.dart';
 
 class LocationSearchPage extends StatelessWidget {
   const LocationSearchPage({super.key});
 
   /// Navigation method with route result
-  static Future<LocationEntity?> toRoute({required BuildContext context}) {
-    return Navigator.push<LocationEntity>(
+  static Future toRoute({required BuildContext context}) {
+    return Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const LocationSearchPage()),
     );
@@ -33,7 +36,7 @@ class LocationSearchPage extends StatelessWidget {
           onTap: () {
             Navigator.pop(context);
           },
-          child: AppContainer.circle(child: Center(child: Icon(Icons.arrow_back,color: appColors.black,size: 20,)),),
+          child: AppContainer.circle(context: context,child: Center(child: Icon(Icons.arrow_back,color: appColors.black,size: 20,)),),
         ),
       ),
         title: AppText(appStrings.searchLocation, style: appStyles.s18w500black),
@@ -49,7 +52,7 @@ class LocationSearchPage extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: appStrings.search,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                suffixIcon: const Icon(Icons.search),
+                prefix:CustomImageView(imagePath:Assets.svg.icSearch),
               ),
             ),
             16.heightBox,
@@ -72,9 +75,13 @@ class LocationSearchPage extends StatelessWidget {
                         final location = locations[index];
                         return GestureDetector(
                           onTap: () {
-                            Navigator.pop(context, location); // return selection
+                            context.read<WeatherCubit>().setCurrentLocation(location.latitude,location.longitude,location.city);
+                            Navigator.pop(context);
                           },
-                          child: AppContainer.primary(
+                          child:
+
+                          AppContainer.secondary(
+                            context: context,
                             padding: AppEdgeInsets.all12(),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,13 +89,10 @@ class LocationSearchPage extends StatelessWidget {
                                 Expanded(
                                   child: AppText(
                                     location.name,
-                                    style: appStyles.s16w500black.copyWith(color: Colors.white),
+                                    style: appStyles.s16w500black,
                                   ),
                                 ),
-                                AppText(
-                                  '${location.latitude.toStringAsFixed(2)}, ${location.longitude.toStringAsFixed(2)}',
-                                  style: appStyles.s14w400Grey.copyWith(color: Colors.white70),
-                                ),
+
                               ],
                             ),
                           ),

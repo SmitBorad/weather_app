@@ -26,10 +26,10 @@ class WeatherCubit extends Cubit<WeatherState> {
   }
 
   LatLng? currentPosition;
-  String? city;
+  String? currentCity;
   void setCurrentLocation(double lat,double lng, String? city) {
     currentPosition = LatLng(lat, lng);
-    city = city ?? '--';
+    currentCity = city ?? '--';
 
     if (currentPosition != null) {
       fetchWeather(currentPosition!.latitude, currentPosition!.longitude);
@@ -37,4 +37,7 @@ class WeatherCubit extends Cubit<WeatherState> {
       emit(WeatherError('Failed to fetch weather'));
     }
   }
+
+
+
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
@@ -123,9 +125,7 @@ Future<String?> getCityFromPosition(Position position) async {
 
     if (placemarks.isNotEmpty) {
       Placemark place = placemarks.first;
-
-      // Try locality, fallback to other fields if needed
-      return place.toString();
+      return place.locality.toString();
     }
   } catch (e) {
     print('Error getting city $e');

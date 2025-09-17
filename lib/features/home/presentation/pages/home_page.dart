@@ -18,29 +18,56 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   static Future<void> toRoute({required BuildContext context}) {
-    return Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+    return Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomePage()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     var appStrings = AppLocalizations.of(context)!;
+    var appColors = AppColors.of(context);
     var appStyles = AppStyles.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: AppText(appStrings.discoverTheWeather, style: appStyles.s18w500black),
+        title: AppText(
+          appStrings.discoverTheWeather,
+          style: appStyles.s18w500black,
+        ),
         actionsPadding: AppEdgeInsets.h16(),
         actions: [
           GestureDetector(
             onTap: () {
               LocationSearchPage.toRoute(context: context);
             },
-            child: AppContainer.circle(child: CustomImageView(imagePath: Assets.svg.icSearch, height: 20, width: 20)),
+            child: AppContainer.circle(
+              context: context,
+              child: CustomImageView(
+                imagePath: Assets.svg.icSearch,
+                height: 20,
+                width: 20,
+              ),
+            ),
           ),
           12.widthBox,
-          GestureDetector(onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => MapPage(),),);
-          },child: AppContainer.circle(child: CustomImageView(imagePath: Assets.svg.icGlobal, height: 20, width: 20))),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MapPage()),
+              );
+            },
+            child: AppContainer.circle(
+              context: context,
+              child: CustomImageView(
+                imagePath: Assets.svg.icGlobal,
+                height: 20,
+                width: 20,
+              ),
+            ),
+          ),
         ],
       ),
       body: BlocBuilder<WeatherCubit, WeatherState>(
@@ -58,6 +85,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   /// ---- CURRENT WEATHER CARD ----
                   AppContainer.primary(
+                    context: context,
                     child: Column(
                       children: [
                         Row(
@@ -68,18 +96,24 @@ class HomePage extends StatelessWidget {
                                 children: [
                                   AppText(
                                     appStrings.currentLocation,
-                                    style: appStyles.s16w400Grey.copyWith(color: AppColors.tempWhite),
+                                    style: appStyles.s16w400Grey.copyWith(
+                                      color: AppColors.tempWhite,
+                                    ),
                                   ),
                                   4.heightBox,
                                   AppText(
-                                    context.read<WeatherCubit>().city ?? '--',
-                                    style: appStyles.s20w600black.copyWith(color: AppColors.tempWhite),
+                                    context.read<WeatherCubit>().currentCity ??
+                                        '--',
+                                    style: appStyles.s20w600black.copyWith(
+                                      color: AppColors.tempWhite,
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
                             CustomImageView(
-                              imagePath: 'https://openweathermap.org/img/wn/${currentWeather.icon}.png',
+                              imagePath:
+                                  'https://openweathermap.org/img/wn/${currentWeather.icon}.png',
                               height: 60,
                               width: 60,
                             ),
@@ -90,12 +124,18 @@ class HomePage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             AppText(
-                              appStrings.windSpeed(currentWeather.windSpeed.toStringAsFixed(2)),
-                              style: appStyles.s16w400Grey.copyWith(color: AppColors.tempWhite),
+                              appStrings.windSpeed(
+                                currentWeather.windSpeed.toStringAsFixed(2),
+                              ),
+                              style: appStyles.s16w400Grey.copyWith(
+                                color: AppColors.tempWhite,
+                              ),
                             ),
                             AppText(
                               '${currentWeather.temperature.toStringAsFixed(1)} ℃',
-                              style: appStyles.s18w500black.copyWith(color: AppColors.tempWhite),
+                              style: appStyles.s18w500black.copyWith(
+                                color: AppColors.tempWhite,
+                              ),
                             ),
                           ],
                         ),
@@ -106,67 +146,95 @@ class HomePage extends StatelessWidget {
 
                   AppText(appStrings.upcoming, style: appStyles.s18w500black),
                   8.heightBox,
-                  ListView.separated(
-                    separatorBuilder: (context, index) => 12.heightBox,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: forecast.length,
-                    itemBuilder: (context, index) {
+                  Row(
+                    children: List.generate(forecast.length, (index) {
                       final dayWeather = forecast[index];
 
-                      return AppContainer.primary(
-                        padding: AppEdgeInsets.all12(),
-                        child: Column(
-                          children: [
-                            Row(
+                      return Expanded(
+                        child: Padding(
+                          padding: AppEdgeInsets.h4(),
+                          child: AppContainer.secondary(
+                            context: context,
+                            child: Column(
                               children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      AppText(
-                                        DateFormat('dd MMM yyyy').format(DateTime.parse(dayWeather.dateTime)),
-                                        style: appStyles.s16w400Grey.copyWith(color: AppColors.tempWhite),
-                                      ),
-                                    ],
+                                AppText(
+                                  DateFormat(
+                                    'dd MMM',
+                                  ).format(DateTime.parse(dayWeather.dateTime)),
+                                  style: appStyles.s16w500black.copyWith(
+                                    fontSize: 12,
                                   ),
                                 ),
+                                4.heightBox,
                                 CustomImageView(
-                                  imagePath: 'https://openweathermap.org/img/wn/${dayWeather.icon}.png',
+                                  imagePath:
+                                      'https://openweathermap.org/img/wn/${dayWeather.icon}.png',
                                   height: 50,
                                   width: 50,
                                 ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    CustomImageView(
+                                      imagePath: Assets.svg.icWind,
+                                      color: appColors.primary,
+                                      height: 20,
+                                    ),
+                                    4.widthBox,
+                                    AppText(
+                                      dayWeather.windSpeed
+                                          .toStringAsFixed(1)
+                                          .toString(),
+                                      style: appStyles.s16w500black.copyWith(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+
+                                  children: [
+                                    CustomImageView(
+                                      imagePath: Assets.svg.icTemperature,
+                                      color: appColors.primary,
+                                      height: 20,
+                                    ),
+                                    4.widthBox,
+                                    AppText(
+                                      dayWeather.temperature.toStringAsFixed(1),
+                                      style: appStyles.s16w500black.copyWith(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
-                            8.heightBox,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                AppText(
-                                  appStrings.windSpeed((dayWeather.windSpeed).toStringAsFixed(2)),
-                                  style: appStyles.s16w400Grey.copyWith(color: AppColors.tempWhite),
-                                ),
-                                AppText(
-                                  '${dayWeather.temperature.toStringAsFixed(1)} ℃',
-                                  style: appStyles.s18w500black.copyWith(color: AppColors.tempWhite),
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
                       );
-                    },
+                    }),
                   ),
                   16.heightBox,
-
-                  AppText(appStrings.temperatureChart, style: appStyles.s18w500black),
+                  AppText(
+                    appStrings.temperatureChart,
+                    style: appStyles.s18w500black,
+                  ),
                   8.heightBox,
-                  WeatherTemperatureChart(weatherData: [currentWeather] + forecast),
+                  WeatherTemperatureChart(
+                    weatherData: [currentWeather] + forecast,
+                  ),
                 ],
               ),
             );
           } else if (state is WeatherError) {
-            return Center(child: AppText('Error: ${state.message}', style: appStyles.s16w400Grey));
+            return Center(
+              child: AppText(
+                'Error: ${state.message}',
+                style: appStyles.s16w400Grey,
+              ),
+            );
           }
 
           return const SizedBox.shrink();
