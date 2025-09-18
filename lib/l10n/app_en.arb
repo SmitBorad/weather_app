@@ -4,6 +4,7 @@
     "locationServiceNeeded": "Location service needed",
     "locationPermissionNeededDis": "Please enable location permission to get more accurate weather information.",
     "allowLocation": "Allow location",
+    "enableLocation": "Enable location",
     "discoverTheWeather": "Discover the weather",
     "wind": "Wind",
     "weatherNow": "Weather now",

@@ -1,27 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:weather_app/core/constant/app_container.dart';
 import 'package:weather_app/core/constant/app_edge_insets.dart';
 import 'package:weather_app/core/constant/app_extentions.dart';
 import 'package:weather_app/core/theme/app_theme.dart';
 import 'package:weather_app/core/utils/custom_image_view.dart';
 import 'package:weather_app/core/utils/custom_text.dart';
-import 'package:weather_app/features/home/presentation/bloc/location_search_cubit.dart';
 import 'package:weather_app/gen/assets.gen.dart';
 import 'package:weather_app/l10n/app_localizations.dart';
-
-import '../bloc/weather_cubit.dart';
+import '../cubit/location_search_cubit.dart';
+import '../cubit/weather_cubit.dart';
 
 class LocationSearchPage extends StatelessWidget {
   const LocationSearchPage({super.key});
-
-  /// Navigation method with route result
-  static Future toRoute({required BuildContext context}) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const LocationSearchPage()),
-    );
-  }
+  static const String routeName = '/location-search';
 
   @override
   Widget build(BuildContext context) {
@@ -30,16 +23,25 @@ class LocationSearchPage extends StatelessWidget {
     final appStyles = AppStyles.of(context);
 
     return Scaffold(
-      appBar: AppBar(leading:  Padding(
-        padding: const EdgeInsets.all(6),
-        child: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: AppContainer.circle(context: context,child: Center(child: Icon(Icons.arrow_back,color: appColors.black,size: 20,)),),
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(6),
+          child: GestureDetector(
+            onTap: () {
+              context.pop();
+            },
+            child: AppContainer.circle(
+              context: context,
+              child: Center(
+                child: Icon(Icons.arrow_back, color: appColors.black, size: 20),
+              ),
+            ),
+          ),
         ),
-      ),
-        title: AppText(appStrings.searchLocation, style: appStyles.s18w500black),
+        title: AppText(
+          appStrings.searchLocation,
+          style: appStyles.s18w500black,
+        ),
       ),
       body: Padding(
         padding: AppEdgeInsets.all16(),
@@ -51,8 +53,21 @@ class LocationSearchPage extends StatelessWidget {
               },
               decoration: InputDecoration(
                 hintText: appStrings.search,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                prefix:CustomImageView(imagePath:Assets.svg.icSearch),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                prefixIconConstraints: BoxConstraints(
+                  maxHeight: 30,
+                  minHeight: 24,
+                  maxWidth: 30,
+                  minWidth: 24,
+                ),
+                prefixIcon: CustomImageView(
+                  imagePath: Assets.svg.icSearch,
+                  color: appColors.primary,
+                  height: 24,
+                  width: 24,
+                ),
               ),
             ),
             16.heightBox,
@@ -65,7 +80,12 @@ class LocationSearchPage extends StatelessWidget {
                     final locations = state.locations;
 
                     if (locations.isEmpty) {
-                      return Center(child: AppText(appStrings.noResultsFound, style: appStyles.s14w400Grey,));
+                      return Center(
+                        child: AppText(
+                          appStrings.noResultsFound,
+                          style: appStyles.s14w400Grey,
+                        ),
+                      );
                     }
 
                     return ListView.separated(
@@ -75,12 +95,14 @@ class LocationSearchPage extends StatelessWidget {
                         final location = locations[index];
                         return GestureDetector(
                           onTap: () {
-                            context.read<WeatherCubit>().setCurrentLocation(location.latitude,location.longitude,location.city);
+                            context.read<WeatherCubit>().setCurrentLocation(
+                              location.latitude,
+                              location.longitude,
+                              location.city,
+                            );
                             Navigator.pop(context);
                           },
-                          child:
-
-                          AppContainer.secondary(
+                          child: AppContainer.secondary(
                             context: context,
                             padding: AppEdgeInsets.all12(),
                             child: Row(
@@ -92,20 +114,27 @@ class LocationSearchPage extends StatelessWidget {
                                     style: appStyles.s16w500black,
                                   ),
                                 ),
-
                               ],
                             ),
                           ),
                         );
                       },
                     );
-                    } else if (state is LocationSearchError) {
-                    return Center(child: AppText(state.message, style: appStyles.s16w400Grey));
+                  } else if (state is LocationSearchError) {
+                    return Center(
+                      child: AppText(
+                        state.message,
+                        style: appStyles.s16w400Grey,
+                      ),
+                    );
                   }
 
-                  return Center(child: AppText(appStrings.startTypingToSearch, style: appStyles.s16w400Grey));
-
-
+                  return Center(
+                    child: AppText(
+                      appStrings.startTypingToSearch,
+                      style: appStyles.s16w400Grey,
+                    ),
+                  );
                 },
               ),
             ),

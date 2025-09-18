@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app/core/constant/app_container.dart';
 import 'package:weather_app/core/constant/app_edge_insets.dart';
@@ -7,7 +8,7 @@ import 'package:weather_app/core/constant/app_extentions.dart';
 import 'package:weather_app/core/theme/app_theme.dart';
 import 'package:weather_app/core/utils/custom_image_view.dart';
 import 'package:weather_app/core/utils/custom_text.dart';
-import 'package:weather_app/features/home/presentation/bloc/weather_cubit.dart';
+import 'package:weather_app/features/home/presentation/cubit/weather_cubit.dart';
 import 'package:weather_app/features/home/presentation/pages/location_search_page.dart';
 import 'package:weather_app/features/home/presentation/pages/weather_map_page.dart';
 import 'package:weather_app/features/home/presentation/widgets/weather_temperature_chart.dart';
@@ -17,12 +18,7 @@ import 'package:weather_app/l10n/app_localizations.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  static Future<void> toRoute({required BuildContext context}) {
-    return Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const HomePage()),
-    );
-  }
+  static const String routeName = '/home';
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +36,7 @@ class HomePage extends StatelessWidget {
         actions: [
           GestureDetector(
             onTap: () {
-              LocationSearchPage.toRoute(context: context);
+              context.goNamed(LocationSearchPage.routeName);
             },
             child: AppContainer.circle(
               context: context,
@@ -54,10 +50,7 @@ class HomePage extends StatelessWidget {
           12.widthBox,
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MapPage()),
-              );
+              context.goNamed(WeatherMapPage.routeName);
             },
             child: AppContainer.circle(
               context: context,
@@ -153,7 +146,7 @@ class HomePage extends StatelessWidget {
                       return Expanded(
                         child: Padding(
                           padding: AppEdgeInsets.h4(),
-                          child: AppContainer.secondary(
+                          child: AppContainer.primary(
                             context: context,
                             child: Column(
                               children: [
@@ -163,6 +156,7 @@ class HomePage extends StatelessWidget {
                                   ).format(DateTime.parse(dayWeather.dateTime)),
                                   style: appStyles.s16w500black.copyWith(
                                     fontSize: 12,
+                                    color: appColors.white,
                                   ),
                                 ),
                                 4.heightBox,
@@ -177,7 +171,7 @@ class HomePage extends StatelessWidget {
                                   children: [
                                     CustomImageView(
                                       imagePath: Assets.svg.icWind,
-                                      color: appColors.primary,
+                                      color: appColors.white,
                                       height: 20,
                                     ),
                                     4.widthBox,
@@ -187,6 +181,7 @@ class HomePage extends StatelessWidget {
                                           .toString(),
                                       style: appStyles.s16w500black.copyWith(
                                         fontSize: 12,
+                                        color: appColors.white,
                                       ),
                                     ),
                                   ],
@@ -197,7 +192,7 @@ class HomePage extends StatelessWidget {
                                   children: [
                                     CustomImageView(
                                       imagePath: Assets.svg.icTemperature,
-                                      color: appColors.primary,
+                                      color: appColors.white,
                                       height: 20,
                                     ),
                                     4.widthBox,
@@ -205,6 +200,7 @@ class HomePage extends StatelessWidget {
                                       dayWeather.temperature.toStringAsFixed(1),
                                       style: appStyles.s16w500black.copyWith(
                                         fontSize: 12,
+                                        color: appColors.white,
                                       ),
                                     ),
                                   ],

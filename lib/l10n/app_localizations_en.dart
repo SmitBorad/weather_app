@@ -22,6 +22,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allowLocation => 'Allow location';
 
   @override
+  String get enableLocation => 'Enable location';
+
+  @override
   String get discoverTheWeather => 'Discover the weather';
 
   @override

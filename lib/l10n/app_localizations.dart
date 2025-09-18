@@ -118,6 +118,12 @@ abstract class AppLocalizations {
   /// **'Allow location'**
   String get allowLocation;
 
+  /// No description provided for @enableLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable location'**
+  String get enableLocation;
+
   /// No description provided for @discoverTheWeather.
   ///
   /// In en, this message translates to:
