@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -77,7 +79,9 @@ class LocationCubit extends Cubit<LocationState> {
   Future<void> enableLocation(BuildContext context) async {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      await Geolocator.requestPermission();
+      await Geolocator.openLocationSettings();
+      await _fetchLocation(context);
+    } else {
       await _fetchLocation(context);
     }
   }
