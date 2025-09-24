@@ -1,0 +1,49 @@
+{
+    "@@locale": "en",
+    "locationPermissionNeeded": "Location permission needed",
+    "locationServiceNeeded": "Location service needed",
+    "locationPermissionNeededDis": "Please enable location permission to get more accurate weather information.",
+    "allowLocation": "Allow location",
+    "enableLocation": "Enable location",
+    "discoverTheWeather": "Discover the weather",
+    "wind": "Wind",
+    "weatherNow": "Weather now",
+    "search": "Search",
+    "locationPermissionPermanentlyDenied": "Location permission permanently denied.",
+    "locationPermissionDenied": "Location permission denied.",
+    "locationServicesDisabled": "Location service is disable.",
+    "openSettings": "Open Settings",
+    "upcoming": "Upcoming",
+    "noResultsFound": "No result found",
+    "currentLocation": "Current location",
+    "currentWeather": "Current Weather",
+    "startTypingToSearch": "Start typing to search",
+    "searchLocation": "Search location",
+    "temperature": "Temperature:",
+    "temperatureChart": "Temperature Chart",
+    "weatherApp": "Weather App",
+    "failedToSearchLocation": "Failed to search location",
+    "locationNotAvailable": "Location not available.",
+    "showTemperatureLayer": "Show Temperature Layer",
+    "showPrecipitationLayer": "Show Precipitation Layer",
+    "retry": "Retry",
+    "humidity": "Humidity:",
+   "windSpeed": "Wind Speed: {name}/kmph",
+   "@windSpeed": {
+     "placeholders": {
+       "name": {}
+     }
+   },
+   "celsius": "{name}°C",
+   "@celsius": {
+     "placeholders": {
+       "name": {}
+     }
+   },
+   "percentage": "{name}%",
+   "@percentage": {
+     "placeholders": {
+       "name": {}
+     }
+   }
+}
